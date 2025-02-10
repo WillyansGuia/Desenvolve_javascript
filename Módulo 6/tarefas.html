@@ -24,12 +24,14 @@
     <ul id="listaTarefas"></ul>
 
     <script>
-        let tarefas = [];
+        let tarefas = JSON.parse(localStorage.getItem("tarefas")) || [];
+        atualizarLista();
 
         function adicionarTarefa() {
             const descricao = document.getElementById("descricao").value.trim();
             if (descricao) {
                 tarefas.push({ descricao, status: false });
+                localStorage.setItem("tarefas", JSON.stringify(tarefas));
                 document.getElementById("descricao").value = "";
                 atualizarLista();
             }
@@ -37,6 +39,13 @@
 
         function alterarStatus(index) {
             tarefas[index].status = !tarefas[index].status;
+            localStorage.setItem("tarefas", JSON.stringify(tarefas));
+            atualizarLista();
+        }
+
+        function excluirTarefa(index) {
+            tarefas.splice(index, 1);
+            localStorage.setItem("tarefas", JSON.stringify(tarefas));
             atualizarLista();
         }
 
@@ -58,8 +67,13 @@
                     span.classList.add("concluida");
                 }
                 
+                const botaoExcluir = document.createElement("button");
+                botaoExcluir.textContent = "Excluir";
+                botaoExcluir.onclick = () => excluirTarefa(index);
+                
                 li.appendChild(checkbox);
                 li.appendChild(span);
+                li.appendChild(botaoExcluir);
                 lista.appendChild(li);
             });
         }
